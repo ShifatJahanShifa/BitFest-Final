@@ -42,9 +42,9 @@ const Home = () => {
           className="w-full h-full "
           alt="Descriptive text"
         />
-        <div className="absolute inset-0 flex justify-center items-end mb-[-2rem] pt-[2rem]">
+        <div className="absolute inset-0 flex ml-24 justify-center items-end py-24">
           <GenButton
-            text="Get Premium"
+            text="Get Started"
             bgColor="bg-black"
             textColor="text-white"
             size="py-3 px-8 "
