@@ -1,6 +1,6 @@
 from fastapi import FastAPI,APIRouter
 from .database import get_db,create_db_and_tables
-from .routers import auth,chatbot,content,qna,user
+from .routers import auth,chatbot,content,qna,user,sysImprove
 
 from fastapi.middleware.cors import CORSMiddleware 
 
@@ -11,6 +11,7 @@ app.include_router(chatbot.router)
 app.include_router(content.router)
 app.include_router(qna.router)
 app.include_router(user.router)
+app.include_router(sysImprove.router)
 
 def configure_cors(app): 
     origins = [ 

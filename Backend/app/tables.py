@@ -44,6 +44,9 @@ class User(Base):
 
     chat= relationship("Chat", back_populates="user", cascade="all, delete",passive_deletes=True,)
     contents= relationship("Content", back_populates="user", cascade="all, delete",passive_deletes=True,)
+    improvement_data = relationship(
+        "TranslationSystemImprovement", back_populates="user", cascade="all, delete", passive_deletes=True
+    )
 
 
 
@@ -71,3 +74,15 @@ class Content(Base):
     updated_at = Column(DateTime, nullable=False)
 
     user = relationship("User", back_populates="contents")
+
+class TranslationSystemImprovement(Base):
+    __tablename__ = "translation_system_improvement"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users_table.id", ondelete="CASCADE"), nullable=False)
+    banglish = Column(String, nullable=False)
+    bangla = Column(String, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    # Relationship to user
+    user = relationship("User", back_populates="improvement_data")
