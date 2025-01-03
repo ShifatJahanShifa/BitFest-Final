@@ -18,3 +18,11 @@ class LoginModel(BaseModel):
 
     class config:
         orm_mode = True
+
+class TranslationImprovementCreate(BaseModel):
+    banglish: str
+    bangla: str
+
+class TranslationImprovementUpdate(BaseModel):
+    banglish: str = None
+    bangla: str = None
