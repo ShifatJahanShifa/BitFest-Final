@@ -23,6 +23,7 @@ import TextEditor from "./pages/TextEditor";
 import FetchPdfLinks from "./pages/FetchPdfLinks";
 import ShowPubPost from "./pages/ShowPubPost";
 import ShowPdfContent from "./pages/ShowPdfContent";
+import SearchComponent from "./pages/SearchComponent";
 
 const App = () => {
   return (
@@ -49,6 +50,7 @@ const App = () => {
          <Route path='/fet' element={<FetchPdfLinks />} />
          <Route path='/fes' element={<ShowPubPost />} />
          <Route path='/showcontents' element={<ShowPdfContent />} />
+         <Route path='/search' element={<SearchComponent />} />
         </Routes>
         
         <Footer />
