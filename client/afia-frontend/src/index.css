@@ -1,0 +1,115 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&family=Palanquin:wght@100;200;300;400;500;600;700&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply p-0 m-0 box-border;
+  }
+
+  html,
+  body {
+    @apply h-full;
+  }
+
+  a {
+    @apply no-underline text-inherit;
+  }
+
+  body {
+    @apply min-h-screen;
+    /* Apply Tailwind min-height */
+    margin: 0;
+    padding: 0;
+  }
+}
+
+.App {
+  @apply w-full mx-auto min-h-screen;
+}
+
+:root {
+  --color-chrome: #4285f4; /* Chrome */
+  --color-safari: #87ceeb; /* Safari */
+  --color-firefox: #ff7139; /* Firefox */
+  --color-edge: #0078d7;   /* Edge */
+  --color-other: #aaa;     /* Other */
+}
+
+
+@layer components {
+  .max-container {
+    max-width: 1440px;
+    margin: 0 auto;
+  }
+
+  .input {
+    @apply sm:flex-1 max-sm:w-full text-base leading-normal text-slate-600 pl-5 max-sm:p-5 outline-none sm:border-none border max-sm:border-slate-600 max-sm:rounded-full;
+  }
+}
+
+@layer utilities {
+  .padding {
+    @apply sm:px-16 px-8 sm:py-24 py-12;
+  }
+
+  .padding-x {
+    @apply sm:px-16 px-7;
+  }
+
+  .padding-y {
+    @apply sm:py-24 py-12;
+  }
+
+  .padding-l {
+    @apply sm:pl-16 pl-8;
+  }
+
+  .padding-r {
+    @apply sm:pr-16 pr-8;
+  }
+
+  .padding-t {
+    @apply sm:pt-[3rem] pt-[2rem];
+  }
+
+  .padding-b {
+    @apply sm:pb-24 pb-12;
+  }
+
+  .info-text {
+    @apply font-montserrat text-slate-gray text-lg leading-7;
+  }
+
+  .text-col {
+    @apply text-[#de755a];
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+
+    to {
+      opacity: 1;
+    }
+  }
+
+  .fade-in {
+    animation: fadeIn 0.5s ease-in-out;
+  }
+
+
+}
+
+@font-face {
+  font-family: PressStart;
+  src: url('/font/PressStart2P-Regular.ttf') format("truetype");
+}
+
+.PressStart {
+  font-family: PressStart;
+}
+
