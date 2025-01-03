@@ -81,7 +81,7 @@ async def chatbot(
         response = chain.invoke({})
 
         # Save the chat to the database
-        new_chat = Chat(user_id=user_id, message=message, response=response)
+        new_chat = Chat(user_id=user_id, message=bot, response=response)
         db.add(new_chat)
         db.commit()
 
