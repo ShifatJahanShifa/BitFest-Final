@@ -13,6 +13,7 @@ from langchain.schema import SystemMessage, HumanMessage
 from dotenv import load_dotenv
 import os
 import uuid
+from PyPDF2 import PdfReader
 
 from ..database import get_db
 from ..oauth2 import get_current_user
@@ -29,12 +30,12 @@ load_dotenv(dotenv_path=env_path)
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 
+# Register custom Bangla font
 font_dir = Path(__file__).parent.parent / "font"  # Path to your fonts directory
-font_name = "kalpurush.ttf"
-# font_path = f"./font/{font_name}"
+font_name = "SolaimanLipi_20-04-07.ttf"
 font_path = str(font_dir / f"{font_name}")  # Path to your custom font file
-
 pdfmetrics.registerFont(TTFont(font_name, font_path))  # Register the custom font
+
 
 @router.post("/generate-pdf")
 async def generate_pdf(
@@ -72,10 +73,47 @@ async def generate_pdf(
         c = canvas.Canvas(str(file_path), pagesize=letter)
         width, height = letter
 
-        # Add Bangla Text using custom font
-        c.setFont(font_name, 12)  # Use custom Bangla font
-        text_object = c.beginText(72, height - 140)
-        text_object.textLines(bangla_text)  # Add Bangla text
+        # Add Title (adjust positioning)
+        c.setFont(font_name, 16)  # Use custom Bangla font for title
+        title_text = c.beginText(72, height - 72)
+        title_text.setFont(font_name, 16)
+        title_text.textLines(title)  # Use textLines instead of drawString
+        c.drawText(title_text)
+
+        # Add Caption (adjust positioning)
+        c.setFont(font_name, 12)  # Use custom Bangla font for caption
+        caption_text = c.beginText(72, height - 100)
+        caption_text.setFont(font_name, 12)
+        caption_text.textLines(caption)  # Use textLines instead of drawString
+        c.drawText(caption_text)
+        # Add Bangla Text with proper line spacing and word wrapping
+        c.setFont(font_name, 10)  # Use custom Bangla font for text
+        text_object = c.beginText(72, height - 140)  # Start text at a fixed position
+        text_object.setFont(font_name, 10)  # Set font size for Bangla text
+
+        # Calculate line breaks to prevent text from going off the page
+        max_width = width - 144  # 1-inch margin on both sides
+        lines = []
+        current_line = ""
+        words = bangla_text.split()
+
+        # Manually wrap text to fit within the page width
+        for word in words:
+            test_line = f"{current_line} {word}".strip()
+            text_width = c.stringWidth(test_line, font_name, 10)
+
+            if text_width < max_width:
+                current_line = test_line
+            else:
+                lines.append(current_line)
+                current_line = word
+
+        lines.append(current_line)  # Append the last line
+
+        # Write wrapped text to PDF
+        for line in lines:
+            text_object.textLine(line)
+
         c.drawText(text_object)
 
         c.save()
@@ -366,3 +404,50 @@ def helping_func(banglish_text: str):
         return bangla_text
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error during translation: {str(e)}")
+
+
+pdf_storage_dir = Path(os.getcwd())  # Adjust this to your PDF storage path
+
+@router.get("/get-pdf-content/")
+async def get_pdf_content(pdf_url: str):
+    # Extract the PDF file path from the URL
+    file_path = pdf_storage_dir / pdf_url
+
+    if not file_path.exists():
+        raise HTTPException(status_code=404, detail="PDF file not found")
+
+    try:
+        # Open and read the PDF file
+        with open(file_path, "rb") as file:
+            pdf_reader = PdfReader(file)
+            text = ""
+
+            # Iterate through each page in the PDF
+            for page_num in range(len(pdf_reader.pages)):
+                page = pdf_reader.pages[page_num]
+                text += page.extract_text()
+
+            if not text.strip():
+                raise HTTPException(status_code=500, detail="Failed to extract text from PDF")
+
+            return {"pdf_content": text}
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error extracting PDF content: {str(e)}")
+
+@router.get("/get-pdf-links/{user_id}")
+async def get_pdf_links(user_id: int, db: Session = Depends(get_db)):
+    try:
+        # Query the Content table to get all PDFs associated with the user_id
+        user_content = db.query(Content).filter(Content.user_id == user_id).all()
+
+        if not user_content:
+            raise HTTPException(status_code=404, detail="No PDFs found for this user")
+
+        # Extract the links of the PDFs
+        pdf_links = [content.link for content in user_content]
+
+        return {"user_id": user_id, "pdf_links": pdf_links}
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error retrieving PDFs: {str(e)}")

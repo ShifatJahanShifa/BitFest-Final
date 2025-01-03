@@ -48,7 +48,7 @@ const Login = () => {
         localStorage.setItem("role", role); // Store role in localStorage
 
         // Navigate to the dashboard
-        navigate("/dashboard");
+        navigate("/");
       }
     } catch (error) {
       setMessage(
