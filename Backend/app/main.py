@@ -1,6 +1,6 @@
 from fastapi import FastAPI,APIRouter
 from .database import get_db,create_db_and_tables
-from .routers import auth,chatbot
+from .routers import auth,chatbot,content
 
 from fastapi.middleware.cors import CORSMiddleware 
 
@@ -8,6 +8,7 @@ app = FastAPI()
 
 app.include_router(auth.router)
 app.include_router(chatbot.router)
+app.include_router(content.router)
 
 def configure_cors(app): 
     origins = [ 

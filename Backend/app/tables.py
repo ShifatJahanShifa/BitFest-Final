@@ -5,7 +5,8 @@ from sqlalchemy import (
     Enum,
     DateTime,
     Text,
-    ForeignKey
+    ForeignKey,
+    Boolean
 )
 from sqlalchemy.orm import Mapped, mapped_column, declarative_base, relationship
 from datetime import datetime
@@ -42,6 +43,7 @@ class User(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
     chat= relationship("Chat", back_populates="user", cascade="all, delete",passive_deletes=True,)
+    contents= relationship("Content", back_populates="user", cascade="all, delete",passive_deletes=True,)
 
 
 
@@ -55,3 +57,17 @@ class Chat(Base):
     timestamp = Column(DateTime, default=datetime.utcnow)
 
     user = relationship("User", back_populates="chat") 
+
+
+class Content(Base):
+    __tablename__ = "contents"
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users_table.id",ondelete="CASCADE"), nullable=False,)
+    link = Column(String, nullable=False)
+    title = Column(String, nullable=False)
+    caption = Column(String, nullable=False)
+    public = Column(Boolean, default=True)
+    created_at = Column(DateTime, nullable=False)
+    updated_at = Column(DateTime, nullable=False)
+
+    user = relationship("User", back_populates="contents")

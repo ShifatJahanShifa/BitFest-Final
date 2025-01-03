@@ -26,7 +26,7 @@ OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 @router.post("/")
 async def chatbot(
-    message: str = Form(...),
+    message: str,
     db: Session = Depends(get_db),
     current_user: dict = Depends(get_current_user),
 ):
