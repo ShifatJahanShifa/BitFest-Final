@@ -304,3 +304,40 @@ async def search_content(
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
+
+
+@router.post("/banglish-to-bangla/")
+async def banglish_to_bangla(
+    banglish_text: str = Form(..., description="The Banglish text to be converted to Bangla")
+):
+    try:
+        # Step 1: Set up the prompt for translation using ChatPromptTemplate
+        prompt = ChatPromptTemplate.from_messages(
+            [
+                SystemMessage(content="আপনি একজন অনুবাদে সহকারী। আপনার কাজ হল ব্যবহারকারীর বাংলিশ (ইংরেজি অক্ষরে লিখিত বাংলাকে) বাংলায় রুপান্তর করা। এটি সবসময় বাংলাতে করতে হবে। উদাহরণস্বরূপ:\n"
+                                     "'ami valo'  → 'আমি ভালো'\n"
+                                     "'tumi kemon acho' → 'তুমি কেমন আছো'\n"
+                                     "'khub bhalo laglo' → 'খুব ভালো লাগলো'\n"
+                                     "'ami khub happy' → 'আমি খুব খুশি'\n"
+                                     "'shekhaney giye chhilo' → 'সেখানে গিয়ে ছিলো'"),
+                HumanMessage(content=banglish_text)  # Add the Banglish text here
+            ]
+        )
+
+        # Step 2: Use OpenAI to generate the translation
+        llm = ChatOpenAI(model="gpt-4o", temperature=0.7, openai_api_key=OPENAI_API_KEY)
+        
+        # Get the result from the model
+        result = llm.predict_messages(prompt.messages)
+
+        # Extract the translated Bangla text
+        bangla_text = result.content.strip()  # Get the response and strip any extra spaces
+
+        # Return the translated text
+        return {
+            "message": "Translation successful",
+            "translated_text": bangla_text
+        }
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error during translation: {str(e)}")
