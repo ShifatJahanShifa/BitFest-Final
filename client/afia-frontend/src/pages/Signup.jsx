@@ -14,7 +14,6 @@ const Signup = () => {
   const [isSuccess, setIsSuccess] = useState(false);
   const [showPopup, setShowPopup] = useState(false); // Popup visibility state
   const navigate = useNavigate(); // To navigate to the home page after success
-  const [signup, setSignup] = useState("");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -39,11 +38,7 @@ const Signup = () => {
   
       if (response.status === 200) {
         setIsSuccess(true);
-<<<<<<< HEAD
         setMessage("Registration successful! Redirecting...");
-=======
-        setSignup("Registration successful! Redirecting...");
->>>>>>> b1b9c68cd5a3a75a539f26e65425bd92c356574f
         setFormData({ name: "", email: "", password: "", role: "user" });
   
         const { access_token } = response.data;
@@ -60,11 +55,7 @@ const Signup = () => {
   
         setTimeout(() => {
           setShowPopup(false);
-<<<<<<< HEAD
           navigate("/");
-=======
-          navigate("/login");
->>>>>>> b1b9c68cd5a3a75a539f26e65425bd92c356574f
         }, 2000);
       }
     } catch (error) {
@@ -82,16 +73,16 @@ const Signup = () => {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-lg">
+        <h2 className="text-2xl font-bold text-center mb-6 text-blue-600">Sign Up</h2>
         {message && (
           <p
-          className={`text-center mb-4 ${isSuccess ? "text-green-500" : "text-red-500"}`}
+            className={`text-center mb-4 ${isSuccess ? "text-green-500" : "text-red-500"}`}
           >
             {message}
           </p>
         )}
-        { !isSuccess && <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <h2 className="text-2xl font-bold text-center mb-6 text-blue-600">Sign Up</h2>
             <label htmlFor="name" className="block text-sm font-medium text-gray-700">
               Name
             </label>
@@ -141,8 +132,8 @@ const Signup = () => {
           >
             Register
           </button>
-
-          <p className="text-center text-sm text-gray-500 mt-4">
+        </form>
+        <p className="text-center text-sm text-gray-500 mt-4">
           Already have an account?{" "}
           <a
             href="/login"
@@ -151,16 +142,6 @@ const Signup = () => {
             Login
           </a>
         </p>
-
-        </form>}
-        { isSuccess && 
-          <div>
-            <h3 className="text-center top-48 left-40">
-              { signup}
-            </h3>
-          </div>
-        }
-        
       </div>
     </div>
   );

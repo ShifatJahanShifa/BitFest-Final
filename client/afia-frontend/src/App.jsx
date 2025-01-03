@@ -20,6 +20,7 @@ import Summary from "./pages/Summary";
 import Translator from "./pages/Translator";
 import Achat from "./pages/Ogrobot/Achat";
 import TextEditor from "./pages/TextEditor";
+import FetchPdfLinks from "./pages/FetchPdfLinks";
 
 const App = () => {
   return (
@@ -43,6 +44,7 @@ const App = () => {
         <Route path='/trans' element={<Translator />} />
          <Route path='/achat' element={<Achat />} />
          <Route path='/texteditor' element={<TextEditor />} />
+         <Route path='/fet' element={<FetchPdfLinks />} />
         </Routes>
         
         <Footer />

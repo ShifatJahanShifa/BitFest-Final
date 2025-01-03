@@ -3,6 +3,7 @@ import 'quill/dist/quill.snow.css'; // Import the Snow theme styles
 import Quill from 'quill';
 import './TextEditor.css'; // Custom styles
 import axios from 'axios';
+import { use } from 'react';
 
 const TextEditor = () => {
   const editorRef = useRef(null);
@@ -41,6 +42,7 @@ const TextEditor = () => {
     const typingInterval = setInterval(type, 150);
     return () => clearInterval(typingInterval);
   }, []);
+  
 
   useEffect(() => {
     // Blinking cursor effect
@@ -68,6 +70,9 @@ const TextEditor = () => {
       quillInstance.disable();
     };
   }, []);
+
+ 
+    
 
   const handleTranslate = async () => {
     const editorContent = editorRef.current.querySelector('.ql-editor').innerHTML;  // Get the HTML content from the editor
@@ -102,28 +107,33 @@ const TextEditor = () => {
     try {
       // Make API call to backend
       const token = localStorage.getItem('token'); // Retrieve token from localStorage or state
-
+  
       const config = {
         headers: {
           Authorization: `Bearer ${token}`, // Add the token to the Authorization header
         },
       };
+  
+      // Remove <p> tags from the translated text using a regular expression
+      const cleanedText = translatedText.replace(/<p[^>]*>/g, '').replace(/<\/p>/g, '\n');
+  
       const formData = new FormData();
-      formData.append("bangla_text", translatedText);
+      formData.append("bangla_text", cleanedText);
       console.log("formData", formData);
-      console.log("banglaText", translatedText);
+      console.log("cleanedText", cleanedText);
+  
       const res = await axios.post("http://localhost:8000/content/generate-pdf", formData, config);
-
+  
       // Extract title and link from the response
       const { title, caption, link } = res.data.content;
-
+  
       // Prepare a response message for the dialog
       const responseMessage = {
         title,
         caption,
         link,
       };
-
+  
       // Set the response message and show the dialog
       setResponse(responseMessage);
       console.log("PDF Generation Response: ", responseMessage);
@@ -133,6 +143,7 @@ const TextEditor = () => {
       alert("Failed to generate PDF. Please try again.");
     }
   };
+  
 
   return (
     <div className="text-editor-container">
@@ -162,7 +173,7 @@ const TextEditor = () => {
           </div>
 
           {/* PDF generation dialog */}
-          <button className="upload-pdf-button" onClick={handleGeneratePDF}>
+          <button className="bg-black text-white py-3 px-8 rounded-lg mt-5" onClick={handleGeneratePDF}>
             Upload to PDF
           </button>
 
