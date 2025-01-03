@@ -9,7 +9,6 @@ import Profile from "./pages/Profile";
 import Chatbot from "./pages/Ogrobot/Chatbot";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
-import Chat from "./pages/Ogrobot/Chat";
 
 
 import "./index.css";
@@ -20,6 +19,7 @@ import ImageUploader from "./pages/Ogrobot/ImageUploader";
 import Summary from "./pages/Summary";
 import Translator from "./pages/Translator";
 import Achat from "./pages/Ogrobot/Achat";
+import TextEditor from "./pages/TextEditor";
 
 const App = () => {
   return (
@@ -36,13 +36,13 @@ const App = () => {
         <Route path="/chatbot" element={<Quiz />} />
         <Route path="/login" element={<Login/>} />
         <Route path="/signup" element={<Signup/>} />
-        <Route path="/chat" element={<Chat/>} />
         <Route path='/dashboard' element={<Dashboard />} />
         <Route path='/bub' element={<ChatBubble />} />
         <Route path='/img' element={<ImageUploader />} />
         <Route path='/summary' element={<Summary />} />
         <Route path='/trans' element={<Translator />} />
          <Route path='/achat' element={<Achat />} />
+         <Route path='/texteditor' element={<TextEditor />} />
         </Routes>
         
         <Footer />

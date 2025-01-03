@@ -93,7 +93,7 @@ function Translator() {
           {translatedText && !loading && (
             <div className="mt-4">
               <h3 className="text-xl font-semibold text-gray-800">Translated Text:</h3>
-              <p className="mt-2 text-gray-600">{translatedText}</p>
+              <p className="mt-2 text-black">{translatedText}</p>
             </div>
           )}
         </div>
