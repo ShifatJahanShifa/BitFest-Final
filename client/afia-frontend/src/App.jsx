@@ -21,6 +21,8 @@ import Translator from "./pages/Translator";
 import Achat from "./pages/Ogrobot/Achat";
 import TextEditor from "./pages/TextEditor";
 import FetchPdfLinks from "./pages/FetchPdfLinks";
+import ShowPubPost from "./pages/ShowPubPost";
+import ShowPdfContent from "./pages/ShowPdfContent";
 
 const App = () => {
   return (
@@ -45,6 +47,8 @@ const App = () => {
          <Route path='/achat' element={<Achat />} />
          <Route path='/texteditor' element={<TextEditor />} />
          <Route path='/fet' element={<FetchPdfLinks />} />
+         <Route path='/fes' element={<ShowPubPost />} />
+         <Route path='/showcontents' element={<ShowPdfContent />} />
         </Routes>
         
         <Footer />

@@ -8,6 +8,8 @@ import BarChart from "../components/Charts/BarChart";
 import PieChart from "../components/Charts/PieChart";
 import axios from 'axios';
 import { useState } from "react";
+import ShowPdfContent from "./ShowPdfContent";
+import ShowPubPost from "./ShowPubPost";
 
 
 
@@ -72,7 +74,7 @@ const Home = () => {
 
         </div>
         <div className="center max-container w-4/5 mx-auto mt-[5rem] fade-in-manual opacity-0">
-          <CategoryCard categories={categories} />
+          <ShowPubPost />
         </div>
       </div>
       <div className="max-container w-4/5 mx-auto mt-[2rem]">
@@ -91,7 +93,7 @@ const Home = () => {
           </a>
         </div>
       </div>
-      <div className="max-container w-4/5 mx-auto mt-[4rem] flex justify-center gap-8">
+      {/* <div className="max-container w-4/5 mx-auto mt-[4rem] flex justify-center gap-8">
       <BarChart />
       <PieChart />
       </div>  
@@ -101,7 +103,7 @@ const Home = () => {
             Chatbot
           </button>
         </a>
-      </div>
+      </div> */}
       <div className="h-32"></div>
     </div>
   );
