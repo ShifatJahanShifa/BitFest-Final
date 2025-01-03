@@ -5,6 +5,8 @@ from pathlib import Path
 from reportlab.lib.pagesizes import letter
 from sqlalchemy import or_
 from reportlab.pdfgen import canvas  # For PDF generation
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
 from langchain_community.chat_models import ChatOpenAI  # Updated import
 from langchain.prompts import ChatPromptTemplate
 from langchain.schema import SystemMessage, HumanMessage
@@ -27,6 +29,13 @@ load_dotenv(dotenv_path=env_path)
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 
+font_dir = Path(__file__).parent.parent / "font"  # Path to your fonts directory
+font_name = "kalpurush.ttf"
+# font_path = f"./font/{font_name}"
+font_path = str(font_dir / f"{font_name}")  # Path to your custom font file
+
+pdfmetrics.registerFont(TTFont(font_name, font_path))  # Register the custom font
+
 @router.post("/generate-pdf")
 async def generate_pdf(
     bangla_text: str = Form(...),
@@ -38,8 +47,8 @@ async def generate_pdf(
     try:
         # Step 1: Generate Title and Caption using LLM
         llm = ChatOpenAI(model="gpt-4", temperature=0.7, openai_api_key=OPENAI_API_KEY)
-        prompt = ChatPromptTemplate.from_messages([  # Create the prompt with a system and human message
-            SystemMessage(content="আপনি একজন বুদ্ধিমান সহকারী। আপনার কাজ হল প্রদত্ত বাংলা লেখার জন্য একটি উপযুক্ত শিরোনাম এবং একটি ছোট ক্যাপশন তৈরি করা।"),
+        prompt = ChatPromptTemplate.from_messages([
+            SystemMessage(content="আপনি একজন বুদ্ধিমান সহকারী। প্রদত্ত বাংলা লেখার জন্য শিরোনাম এবং ক্যাপশন তৈরি করুন।"),
             HumanMessage(content=f"লেখা:\n{bangla_text}\n\nশিরোনাম এবং ক্যাপশন তৈরি করুন।")
         ])
         result = llm.predict_messages(prompt.messages)
@@ -53,47 +62,33 @@ async def generate_pdf(
         title = title.strip()
         caption = caption.strip()
 
-        # Step 2: Generate PDF using reportlab
+        # Step 2: Generate PDF
         unique_filename = f"{uuid.uuid4()}.pdf"
-
-        # Get the current working directory (CWD) where the script is executed
         cwd = Path(os.getcwd())
-
-        # Define the path for saving the PDFs relative to the CWD
         file_path = cwd / "pdfs" / unique_filename
         file_path.parent.mkdir(exist_ok=True, parents=True)
 
-        # Create the PDF with reportlab
+        # Create the PDF
         c = canvas.Canvas(str(file_path), pagesize=letter)
         width, height = letter
 
-        # Add Title to PDF
-        c.setFont("Helvetica-Bold", 16)
-        c.drawString(72, height - 72, title)  # Start 1 inch from the top-left corner
-
-        # Add Caption to PDF
-        c.setFont("Helvetica", 12)
-        c.drawString(72, height - 100, caption)
-
-        # Add Bangla Text
-        c.setFont("Helvetica", 10)
-        text_object = c.beginText(72, height - 140)  # Start Bangla text below title and caption
-        text_object.setFont("Helvetica", 10)
-        text_object.textLines(bangla_text)
+        # Add Bangla Text using custom font
+        c.setFont(font_name, 12)  # Use custom Bangla font
+        text_object = c.beginText(72, height - 140)
+        text_object.textLines(bangla_text)  # Add Bangla text
         c.drawText(text_object)
 
         c.save()
 
         # Step 3: Save Metadata in Database
-        # Store the relative file path
-        relative_file_path = str(file_path.relative_to(cwd))  # Get the relative path from the current working directory
+        relative_file_path = str(file_path.relative_to(cwd))
 
         new_content = Content(
             user_id=user_id,
-            link=relative_file_path,  # Save the relative file path here
+            link=relative_file_path,
             title=title,
             caption=caption,
-            public=True,  # Default to public
+            public=True,
             created_at=datetime.utcnow(),
             updated_at=datetime.utcnow()
         )
@@ -107,7 +102,7 @@ async def generate_pdf(
                 "id": new_content.id,
                 "title": title,
                 "caption": caption,
-                "link": relative_file_path,  # Return the relative path to the user
+                "link": relative_file_path,
                 "public": new_content.public
             }
         }
@@ -257,6 +252,7 @@ async def search_content(
     filter_by: str = Query(None, description="Filter by 'user' or 'content'"),
     db: Session = Depends(get_db)
 ):
+    search_query =  helping_func(search_query)
     try:
         # Search for contents matching the search_query
         if filter_by == "user":
@@ -339,5 +335,34 @@ async def banglish_to_bangla(
             "translated_text": bangla_text
         }
 
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error during translation: {str(e)}")
+
+def helping_func(banglish_text: str):
+    try:
+        # Check if the input text is already in Bangla using a simple check (e.g., if it contains any Bengali characters)
+        if any('\u0980' <= char <= '\u09FF' for char in banglish_text):  # This range includes Bengali characters
+            return banglish_text  # Return as is if it's already in Bangla
+
+        # If the text is not in Bangla, proceed with the translation from Banglish to Bangla
+        prompt = ChatPromptTemplate.from_messages(
+            [
+                SystemMessage(content="আপনি একজন অনুবাদে সহকারী। আপনার কাজ হল ব্যবহারকারীর বাংলিশ (ইংরেজি অক্ষরে লিখিত বাংলাকে) বাংলায় রুপান্তর করা। এটি সবসময় বাংলাতে করতে হবে। উদাহরণস্বরূপ:\n"
+                                     "'ami valo'  → 'আমি ভালো'\n"
+                                     "'tumi kemon acho' → 'তুমি কেমন আছো'\n"
+                                     "'khub bhalo laglo' → 'খুব ভালো লাগলো'\n"
+                                     "'ami khub happy' → 'আমি খুব খুশি'\n"
+                                     "'shekhaney giye chhilo' → 'সেখানে গিয়ে ছিলো'"),
+                HumanMessage(content=banglish_text)
+            ]
+        )
+
+        # Step 2: Use OpenAI to generate the translation
+        llm = ChatOpenAI(model="gpt-4", temperature=0.7, openai_api_key=OPENAI_API_KEY)
+        result = llm.predict_messages(prompt.messages)
+
+        # Extract the translated Bangla text
+        bangla_text = result.content.strip()  # Get the response and strip any extra spaces
+        return bangla_text
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error during translation: {str(e)}")
