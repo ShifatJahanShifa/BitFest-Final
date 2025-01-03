@@ -1,0 +1,91 @@
+import React, { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
+import axios from "axios";
+import { food } from "../assets/constants";
+import CategoryCard from "../components/Cards/CategoryCard";
+
+const CategoryDetail = () => {
+  const location = useLocation();
+  const { name, image } = location.state || {};// Passed from CategoryCard
+  const [foodItems, setFoodItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  
+  const [cart, setCart] = useState([]);
+
+  const addToCart = (item) => {
+    setCart((prevCart) => [...prevCart, item]); // Add item to the cart
+    console.log(`${item.name} added to cart`);
+  };
+
+//   // Fetch food items when the component mounts
+//   useEffect(() => {
+//     const fetchFoodItems = async () => {
+//       try {
+//         setLoading(true);
+//         const response = await axios.get(`/api/food?category=${name}`);
+//         setFoodItems(response.data); // Assuming the API returns an array of food items
+//       } catch (err) {
+//         setError("Failed to load food items. Please try again later.");
+//       } finally {
+//         setLoading(false);
+//       }
+//     };
+
+//     fetchFoodItems();
+//   }, [name]);
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>{error}</p>;
+
+  return (
+    <div className="category-detail-page">
+      <div className="category-header">
+        <img src={image} alt={name} />
+        <h1>{name}</h1>
+      </div>
+
+      {/* <div className="food-items grid grid-cols-2 gap-4 p-4">
+        {foodItems.map((item, index) => (
+          <div
+            key={index}
+            className="food-item bg-white shadow-md rounded-lg p-4 flex flex-col items-center"
+          >
+            <img
+              src={item.image}
+              alt={item.name}
+              className="h-32 w-32 object-cover rounded-md mb-2"
+            />
+            <h3 className="text-lg font-semibold">{item.name}</h3>
+            <p className="text-sm text-gray-500">{item.description}</p>
+            <p className="text-lg font-bold mt-2">${item.price}</p>
+          </div>
+        ))}
+      </div> */}
+
+    
+    </div>
+  );
+};
+
+export default CategoryDetail;
+
+{/* Add-Ons Section */}
+<div className="mt-4">
+<p className="text-base font-semibold text-gray-800">Add-Ons:</p>
+<div className="mt-2 flex flex-wrap gap-4">
+  {["Extra fondant topping", "Extra chocolate topping", "Edible photo"].map(
+    (option) => (
+      <label key={option} className="flex items-center space-x-2">
+        <input
+          type="checkbox"
+          className="form-checkbox text-gray-600"
+          checked={addOns.includes(option)}
+          onChange={() => toggleAddOn(option)}
+        />
+        <span>{option}</span>
+      </label>
+    )
+  )}
+</div>
+</div>
