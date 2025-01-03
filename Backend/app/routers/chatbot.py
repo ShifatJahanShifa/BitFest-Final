@@ -47,7 +47,7 @@ async def chatbot(
     )
 
     # Add user message to context
-    chat_context += f"\nUser: {message}"
+    chat_context += f"\nUser: {bot}"
 
     # Initialize LLM and construct the prompt
     prompt = ChatPromptTemplate.from_messages(
@@ -63,7 +63,7 @@ async def chatbot(
                 {chat_context}
 
                 নতুন প্রশ্ন:
-                {message}
+                {bot}
 
                 আপনার উত্তর সবসময় বাংলাতে হওয়া উচিত এবং প্রাসঙ্গিক হতে হবে।
                 """,
