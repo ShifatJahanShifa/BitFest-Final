@@ -31,11 +31,12 @@ const Nav = () => {
         {/* Logo on the left */}
         <a href="/">
           <img
+
             src="ai.png"
             alt="logo"
-            width={230}
-            height={230}
-            className="flex-shrink-0"
+            width={180}
+            height={180}
+            className="flex-shrink-0 mt-4"
           />
         </a>
 
