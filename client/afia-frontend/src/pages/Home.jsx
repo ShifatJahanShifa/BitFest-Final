@@ -7,8 +7,6 @@ import GenButton from "../components/Buttons/GenButton";
 import BarChart from "../components/Charts/BarChart";
 import PieChart from "../components/Charts/PieChart";
 import axios from 'axios';
-import { useState } from 'react';
-
 
 
 const Home = () => {
