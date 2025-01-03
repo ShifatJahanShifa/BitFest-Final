@@ -12,7 +12,8 @@ const Nav = () => {
   // Check token in localStorage on component mount
   useEffect(() => {
     const token = localStorage.getItem('token');
-    setIsLoggedIn(!!token);
+    
+    setIsLoggedIn(token ? true : false);
   }, []);
 
   const toggleMenu = () => {
