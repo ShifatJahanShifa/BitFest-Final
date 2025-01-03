@@ -1,8 +1,9 @@
-from fastapi import APIRouter, HTTPException, Form, Depends
+from fastapi import APIRouter, HTTPException, Form, Depends, Query
 from sqlalchemy.orm import Session
 from datetime import datetime
 from pathlib import Path
 from reportlab.lib.pagesizes import letter
+from sqlalchemy import or_
 from reportlab.pdfgen import canvas  # For PDF generation
 from langchain_community.chat_models import ChatOpenAI  # Updated import
 from langchain.prompts import ChatPromptTemplate
@@ -13,7 +14,7 @@ import uuid
 
 from ..database import get_db
 from ..oauth2 import get_current_user
-from ..tables import Content  # Import the Content model
+from ..tables import Content, User  # Import the Content model
 
 router = APIRouter(
     prefix="/content",
@@ -54,7 +55,12 @@ async def generate_pdf(
 
         # Step 2: Generate PDF using reportlab
         unique_filename = f"{uuid.uuid4()}.pdf"
-        file_path = Path(__file__).resolve().parent.parent / "pdfs" / unique_filename
+
+        # Get the current working directory (CWD) where the script is executed
+        cwd = Path(os.getcwd())
+
+        # Define the path for saving the PDFs relative to the CWD
+        file_path = cwd / "pdfs" / unique_filename
         file_path.parent.mkdir(exist_ok=True, parents=True)
 
         # Create the PDF with reportlab
@@ -79,9 +85,12 @@ async def generate_pdf(
         c.save()
 
         # Step 3: Save Metadata in Database
+        # Store the relative file path
+        relative_file_path = str(file_path.relative_to(cwd))  # Get the relative path from the current working directory
+
         new_content = Content(
             user_id=user_id,
-            link=str(file_path),
+            link=relative_file_path,  # Save the relative file path here
             title=title,
             caption=caption,
             public=True,  # Default to public
@@ -98,7 +107,7 @@ async def generate_pdf(
                 "id": new_content.id,
                 "title": title,
                 "caption": caption,
-                "link": str(file_path),
+                "link": relative_file_path,  # Return the relative path to the user
                 "public": new_content.public
             }
         }
@@ -106,3 +115,192 @@ async def generate_pdf(
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
 
+
+
+@router.put("/update/{content_id}")
+async def update_content(
+    content_id: int,
+    title: str = Form(...),
+    caption: str = Form(...),
+    public: bool = Form(...),
+    db: Session = Depends(get_db),
+    current_user: dict = Depends(get_current_user),
+):
+    user_id = current_user["user_id"]
+
+    try:
+        # Step 1: Fetch the existing content by its ID
+        content = db.query(Content).filter(Content.id == content_id, Content.user_id == user_id).first()
+
+        if not content:
+            raise HTTPException(status_code=404, detail="Content not found or not owned by the user.")
+
+        # Step 2: Update the content's metadata
+        content.title = title
+        content.caption = caption
+        content.public = public  # Update the public/private flag
+        content.updated_at = datetime.utcnow()  # Set the updated timestamp
+
+        db.commit()
+        db.refresh(content)  # Refresh to reflect changes in the content object
+
+        return {
+            "message": "Content updated successfully.",
+            "content": {
+                "id": content.id,
+                "title": content.title,
+                "caption": content.caption,
+                "link": content.link,
+                "public": content.public,
+                "updated_at": content.updated_at
+            }
+        }
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
+
+
+@router.delete("/delete-pdf/{content_id}")
+async def delete_pdf(content_id: int, db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
+    # Get the user_id from the current user
+    user_id = current_user["user_id"]
+    
+    try:
+        # Step 1: Find the content record by ID
+        content = db.query(Content).filter(Content.id == content_id, Content.user_id == user_id).first()
+
+        if not content:
+            raise HTTPException(status_code=404, detail="Content not found or not authorized to delete it")
+
+        # Step 2: Delete the PDF file from the filesystem
+        file_path = Path(content.link)  # Get the relative path from the database
+        if file_path.exists():
+            os.remove(file_path)  # Delete the file from the filesystem
+        else:
+            raise HTTPException(status_code=404, detail="PDF file not found on the server")
+
+        # Step 3: Delete the record from the database
+        db.delete(content)
+        db.commit()
+
+        return {"message": "PDF and content deleted successfully"}
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
+
+@router.get("/get-contents")
+async def get_user_contents(db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
+    user_id = current_user["user_id"]
+
+    try:
+        # Step 1: Retrieve all contents for the logged-in user
+        contents = db.query(Content).filter(Content.user_id == user_id).all()
+
+        # Step 2: If no contents are found, raise an exception
+        if not contents:
+            raise HTTPException(status_code=404, detail="No contents found for the logged-in user")
+
+        # Step 3: Return the list of contents
+        return {
+            "message": "Contents retrieved successfully",
+            "contents": [
+                {
+                    "id": content.id,
+                    "title": content.title,
+                    "caption": content.caption,
+                    "link": content.link,
+                    "public": content.public,
+                    "created_at": content.created_at,
+                    "updated_at": content.updated_at
+                }
+                for content in contents
+            ]
+        }
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
+
+
+@router.get("/get-public-contents/{target_user_id}")
+async def get_public_contents_by_user(target_user_id: int, db: Session = Depends(get_db)):
+    try:
+        # Step 1: Retrieve all public contents for the target user
+        contents = db.query(Content).filter(Content.user_id == target_user_id, Content.public == True).all()
+
+        # Step 2: If no public contents are found, raise an exception
+        if not contents:
+            raise HTTPException(status_code=404, detail="No public contents found for this user")
+
+        # Step 3: Return the list of public contents
+        return {
+            "message": "Public contents retrieved successfully",
+            "contents": [
+                {
+                    "id": content.id,
+                    "title": content.title,
+                    "caption": content.caption,
+                    "link": content.link,
+                    "public": content.public,
+                    "created_at": content.created_at,
+                    "updated_at": content.updated_at
+                }
+                for content in contents
+            ]
+        }
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
+
+@router.get("/search/")
+async def search_content(
+    search_query: str = Query(..., min_length=1, description="Search term for username or content title"),
+    filter_by: str = Query(None, description="Filter by 'user' or 'content'"),
+    db: Session = Depends(get_db)
+):
+    try:
+        # Search for contents matching the search_query
+        if filter_by == "user":
+            # Filter by user's username
+            results = db.query(Content).join(User).filter(
+                User.name.ilike(f"%{search_query}%"),
+                Content.user_id == User.id,
+                Content.public == True  # Only public contents
+            ).all()
+        elif filter_by == "content":
+            # Filter by content's title
+            results = db.query(Content).filter(
+                Content.title.ilike(f"%{search_query}%"),
+                Content.public == True  # Only public contents
+            ).all()
+        else:
+            # Default to search by both username and content title
+            results = db.query(Content).join(User).filter(
+                or_(
+                    User.name.ilike(f"%{search_query}%"),
+                    Content.title.ilike(f"%{search_query}%")
+                ),
+                Content.public == True  # Only public contents
+            ).all()
+
+        if not results:
+            return {"message": "No matching results found."}
+
+        # Return the results
+        return {
+            "results": [
+                {
+                    "id": content.id,
+                    "title": content.title,
+                    "caption": content.caption,
+                    "link": content.link,
+                    "public": content.public,
+                    "user_name": content.user.name,  # Assuming the User model has a `name` field
+                    "created_at": content.created_at,
+                    "updated_at": content.updated_at,
+                }
+                for content in results
+            ]
+        }
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
