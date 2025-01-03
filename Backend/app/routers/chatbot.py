@@ -37,7 +37,7 @@ async def chatbot(
         db.query(Chat)
         .filter(Chat.user_id == user_id)
         .order_by(Chat.timestamp.desc())
-        .limit(10)  # Fetch last 5 messages
+        .limit(5)  # Fetch last 5 messages
         .all()
     )
 
