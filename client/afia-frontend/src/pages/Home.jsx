@@ -7,6 +7,8 @@ import GenButton from "../components/Buttons/GenButton";
 import BarChart from "../components/Charts/BarChart";
 import PieChart from "../components/Charts/PieChart";
 import axios from 'axios';
+import { useState } from "react";
+
 
 
 const Home = () => {
@@ -85,7 +87,7 @@ const Home = () => {
         <div className="absolute inset-0 flex ml-24 justify-center items-end py-24">
           <a href="/achat">
            <button className="bg-black text-white py-3 px-8 rounded-lg">
-            "Get Started"</button>
+            Get Started</button>
           </a>
         </div>
       </div>

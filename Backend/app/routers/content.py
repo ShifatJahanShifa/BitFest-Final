@@ -286,7 +286,6 @@ async def search_content(
     filter_by: str = Query(None, description="Filter by 'user' or 'content'"),
     db: Session = Depends(get_db)
 ):
-    search_query =  helping_func(search_query)
     try:
         # Search for contents matching the search_query
         if filter_by == "user":
@@ -297,12 +296,14 @@ async def search_content(
                 Content.public == True  # Only public contents
             ).all()
         elif filter_by == "content":
+            search_query =  helping_func(search_query)
             # Filter by content's title
             results = db.query(Content).filter(
                 Content.title.ilike(f"%{search_query}%"),
                 Content.public == True  # Only public contents
             ).all()
         else:
+            search_query =  helping_func(search_query)
             # Default to search by both username and content title
             results = db.query(Content).join(User).filter(
                 or_(
