@@ -3,9 +3,18 @@ import { dine_24,dine_25,dine_26,dine_27,bill1 ,s11,s22,s33,s4,b1} from "../imag
 import {p1,p2,p3} from "../pdf";
 export const navLinks = [
     { href: "/", label: "Home" },
-    { href: "/newsletter", label: "Newsletter" },
-    { href: "/profile", label: "Profile" },
+    { href: "/achat", label: "Banglish Chatbot" },
+    { href: "/dashboard", label: "Profile" },
+    { href: "/texteditor", label: "TextEditor" },
 ];
+
+
+// export const pdfs = [
+//     {id: 1, link: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf", title: "Dummy PDF", caption: "This is a dummy PDF file", public: True},
+//     {id: 2, link: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf", title: "Dummy PDF", caption: "This is a dummy PDF file", public: True},
+//     {id: 3, link: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf", title: "Dummy PDF", caption: "This is a dummy PDF file", public: True},
+//     {id: 4, link: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf", title: "Dummy PDF", caption: "This is a dummy PDF file", public: True},
+// ]
 
 export const books = [
     

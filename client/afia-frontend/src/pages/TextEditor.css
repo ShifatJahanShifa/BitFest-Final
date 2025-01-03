@@ -1,0 +1,158 @@
+/* Container styling */
+.text-editor-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 20px auto;
+  padding: 20px;
+  max-width: 1000px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: #f9f9f9;
+}
+
+/* Typing demo heading styling */
+.typing-demo {
+  font-family: monospace;
+  font-size: 1.7rem;
+  white-space: nowrap;
+  overflow: hidden;
+  border-right: 3px solid;
+  animation: blink 0.5s step-end infinite alternate;
+  text-align: center;
+}
+
+.cursor {
+  display: inline-block;
+  width: 3px;
+  height: 1em;
+  background-color: black;
+}
+
+@keyframes blink {
+  50% {
+    border-color: transparent;
+  }
+}
+
+/* Editor box styling */
+.editor-box {
+  height: 500px;
+  width: 100%;
+  max-width: 1200px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  padding: 10px;
+  border-radius: 4px;
+  overflow-y: auto;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Dialog overlay */
+.dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+/* Dialog box styling */
+.dialog-box {
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  width: 400px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+
+.dialog-box h3 {
+  margin-bottom: 20px;
+  font-size: 20px;
+  color: #333;
+}
+
+.dialog-box label {
+  display: block;
+  margin: 10px 0;
+  text-align: left;
+}
+
+.dialog-box input,
+.dialog-box select {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.dialog-actions button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.dialog-actions button:first-child {
+  background: #1a73e8;
+  color: #fff;
+}
+
+.dialog-actions button:last-child {
+  background: #ddd;
+}
+
+/* Upload PDF button styling */
+.upload-pdf-button {
+  padding: 10px 20px;
+  font-size: 16px;
+  color: #fff;
+  background-color: #4caf50;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.upload-pdf-button:hover {
+  background-color: #000000;
+}
+/* Card container */
+.translated-card {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin-top: 20px;
+  padding: 20px;
+  max-width: 800px;
+  margin: 20px auto;
+}
+
+/* Card header */
+.card-header {
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.card-header h3 {
+  font-size: 1.5rem;
+  color: #333;
+}
+
+/* Card body with translated text */
+
+

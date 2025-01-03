@@ -10,6 +10,11 @@ const Dashboard = () => {
       height: 350,
       type: 'radialBar',
     },
+    chart: {
+      height: 500,  // Increased height for the chart
+      width: 500,   // Added width property to control the size
+      type: 'radialBar',
+    },
     plotOptions: {
       radialBar: {
         dataLabels: {
@@ -30,12 +35,13 @@ const Dashboard = () => {
         },
       },
     },
-    labels: ['Apples', 'Oranges', 'Bananas', 'Berries'],
+    labels: ['words-translated', 'stories-written',
+      'bot interactions', 'stories-read'],
   };
 
   return (
     <main>
-      <div className="grid mb-4 pb-10 px-8 mx-4 rounded-3xl bg-gray-100 border-4 border-green-400">
+      <div className="grid mb-4 pb-10 px-8 mx-4 rounded-3xl bg-gray-100 border-4 ">
         <div className="grid grid-cols-12 gap-6">
           <div className="grid grid-cols-12 col-span-12 gap-6 xxl:col-span-9">
             <div className="col-span-12 mt-8">

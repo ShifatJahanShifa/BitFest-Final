@@ -85,14 +85,10 @@ const Home = () => {
           alt="Descriptive text"
         />
         <div className="absolute inset-0 flex ml-24 justify-center items-end py-24">
-          <GenButton
-            text="Get Started"
-            bgColor="bg-black"
-            textColor="text-white"
-            size="py-3 px-8 "
-            borderRadius="rounded-lg"
-            onClick={() => console.log("Learning more!")}
-          />
+          <a href="/achat">
+           <button className="bg-black text-white py-3 px-8 rounded-lg">
+            "Get Started"</button>
+          </a>
         </div>
       </div>
       <div className="max-container w-4/5 mx-auto mt-[4rem] flex justify-center gap-8">
