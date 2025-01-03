@@ -7,7 +7,7 @@ const Signup = () => {
     name: "",
     email: "",
     password: "",
-    role: "student", // Default role is 'student'
+    role: "user", // Default role is 'student'
   });
 
   const [message, setMessage] = useState("");
@@ -28,41 +28,38 @@ const Signup = () => {
     try {
       const response = await axios.post(
         "http://127.0.0.1:8000/auth/register",
-        new URLSearchParams(formData), // Convert `formData` to `x-www-form-urlencoded`
+        formData, // Send formData as a JSON object
         {
-          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          headers: { "Content-Type": "application/json" }, // Ensure the correct content type
         }
       );
-
+  
       console.log("response", response);
-      
+  
       if (response.status === 200) {
         setIsSuccess(true);
         setMessage("Registration successful! Redirecting...");
-        setFormData({ name: "", email: "", password: "", role: "student" });
-
-        // Store JWT token in localStorage
+        setFormData({ name: "", email: "", password: "", role: "user" });
+  
         const { access_token } = response.data;
         localStorage.setItem("token", access_token);
-
-        // Decode JWT token to retrieve user ID and role
-        const decodedToken = JSON.parse(atob(access_token.split(".")[1])); // Decode JWT token
+  
+        const decodedToken = JSON.parse(atob(access_token.split(".")[1]));
         console.log("Decoded Token:", decodedToken);
         const { user_id, role } = decodedToken;
-
-        // Print user ID and role to console
+  
         console.log("User ID:", user_id);
         console.log("Role:", role);
-
-        // Show success popup
+  
         setShowPopup(true);
-
+  
         setTimeout(() => {
-          setShowPopup(false); // Hide the popup after 2 seconds
-          navigate("/"); // Navigate to home after successful signup
+          setShowPopup(false);
+          navigate("/");
         }, 2000);
       }
     } catch (error) {
+      console.log("Error:", error.response?.data || error.message);
       if (error.response?.status === 400 || error.response?.data?.message === "Email already exists.") {
         setMessage("An account with this email already exists.");
       } else {
@@ -71,6 +68,7 @@ const Signup = () => {
       setIsSuccess(false);
     }
   };
+  
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
@@ -127,20 +125,6 @@ const Signup = () => {
             />
           </div>
           <div>
-            <label htmlFor="role" className="block text-sm font-medium text-gray-700">
-              Role
-            </label>
-            <select
-              id="role"
-              name="role"
-              value={formData.role}
-              onChange={handleChange}
-              className="mt-1 block w-full p-2 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-            >
-              <option value="student">Student</option>
-              <option value="teacher">Teacher</option>
-              <option value="admin">Admin</option>
-            </select>
           </div>
           <button
             type="submit"

@@ -32,16 +32,21 @@ const Login = () => {
   
         setMessage("Login successful!");
         
-         // Decode JWT token to retrieve user ID and role
+        // Decode JWT token to retrieve user ID (set role to 'user' by default)
         const decodedToken = JSON.parse(atob(access_token.split(".")[1])); // Decode JWT token
         console.log("Decoded Token:", decodedToken);
-        const { user_id, role } = decodedToken;
+        const { user_id } = decodedToken; // Assuming the token contains user_id
+
+        // Set role to 'user' by default if not present
+        const role = decodedToken.role || "user"; // Default to 'user' if role is not provided
 
         // Print user ID and role to console
         console.log("User ID:", user_id);
         console.log("Role:", role);
 
-  
+        // Store role in localStorage
+        localStorage.setItem("role", role); // Store role in localStorage
+
         // Navigate to the dashboard
         navigate("/dashboard");
       }
@@ -51,7 +56,7 @@ const Login = () => {
       );
     }
   };
-  
+
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="bg-white shadow-md rounded-lg p-8 max-w-md w-full">

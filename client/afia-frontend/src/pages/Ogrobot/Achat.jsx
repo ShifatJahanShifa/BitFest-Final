@@ -50,7 +50,7 @@ const Achat = () => {
         "http://localhost:8000/chat/",
         null,
         {
-          params: { message: userInput },
+          params: { bot: userInput },
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -111,10 +111,7 @@ const Achat = () => {
           placeholder="Type a message..."
           className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
-        <button
-          type="submit"
-          className="ml-2 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
-        >
+         <button className="bg-black text-white py-3 px-8 rounded-lg ml-2">
           Send
         </button>
       </form>

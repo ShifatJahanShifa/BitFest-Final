@@ -26,3 +26,4 @@ openai
 pygame
 langchain-openai
 reportlab
+pypdf

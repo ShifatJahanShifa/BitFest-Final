@@ -104,3 +104,5 @@ def get_chat_history(
         return {"message": "No chat history found."}
 
     return {"chat_history": [{"message": chat.message, "response": chat.response, "timestamp": chat.timestamp} for chat in chats]}
+
+

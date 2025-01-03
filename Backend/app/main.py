@@ -1,6 +1,6 @@
 from fastapi import FastAPI,APIRouter
 from .database import get_db,create_db_and_tables
-from .routers import auth,chatbot,content
+from .routers import auth,chatbot,content,qna
 
 from fastapi.middleware.cors import CORSMiddleware 
 
@@ -9,6 +9,7 @@ app = FastAPI()
 app.include_router(auth.router)
 app.include_router(chatbot.router)
 app.include_router(content.router)
+app.include_router(qna.router)
 
 def configure_cors(app): 
     origins = [ 
@@ -19,7 +20,7 @@ def configure_cors(app):
         "http://127.0.0.1", 
     ] 
  
-    app.add_middleware( 
+    app.add_middleware(  
         CORSMiddleware, 
         allow_origins=origins,  # Allows all origins or specific ones 
         allow_credentials=True, 
