@@ -153,8 +153,6 @@ async def generate_pdf(
 @router.put("/update/{content_id}")
 async def update_content(
     content_id: int,
-    title: str = Form(...),
-    caption: str = Form(...),
     public: bool = Form(...),
     db: Session = Depends(get_db),
     current_user: dict = Depends(get_current_user),
@@ -169,8 +167,6 @@ async def update_content(
             raise HTTPException(status_code=404, detail="Content not found or not owned by the user.")
 
         # Step 2: Update the content's metadata
-        content.title = title
-        content.caption = caption
         content.public = public  # Update the public/private flag
         content.updated_at = datetime.utcnow()  # Set the updated timestamp
 

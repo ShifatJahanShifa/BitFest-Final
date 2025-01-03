@@ -47,6 +47,7 @@
   border-radius: 4px;
   overflow-y: auto;
   box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+  font-size: 18px;
 }
 
 /* Dialog overlay */
@@ -131,14 +132,21 @@
 .upload-pdf-button:hover {
   background-color: #000000;
 }
-/* Card container */
+
+/* Translated card styling (same width as editor box) */
 .translated-card {
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* Align to the left */
+  margin: 20px auto;
   padding: 20px;
-  max-width: 800px;
+  width: 100%;
+  max-width: 1200px; /* Match editor box width */
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  padding: 20px;
   margin: 20px auto;
 }
 
@@ -147,12 +155,20 @@
   text-align: center;
   margin-bottom: 15px;
 }
-
 .card-header h3 {
   font-size: 1.5rem;
   color: #333;
 }
 
 /* Card body with translated text */
+.card-body {
+  padding: 15px;
+  background-color: #f9f9f9;
+  border-radius: 6px;
+}
 
-
+.translated-text {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #444;
+}

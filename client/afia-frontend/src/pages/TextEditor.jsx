@@ -2,14 +2,13 @@ import React, { useEffect, useRef, useState } from 'react';
 import 'quill/dist/quill.snow.css'; // Import the Snow theme styles
 import Quill from 'quill';
 import './TextEditor.css'; // Custom styles
-import jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
+import axios from 'axios';
 
 const TextEditor = () => {
   const editorRef = useRef(null);
   const [typingText, setTypingText] = useState("Banglish e lekha shuru korun.");
   const [showCursor, setShowCursor] = useState(true);
-
+  const [response, setResponse] = useState(null);
   const [isTranslated, setIsTranslated] = useState(false);
   const [translatedText, setTranslatedText] = useState(""); // State for translated text
   const [showDialog, setShowDialog] = useState(false);
@@ -18,7 +17,7 @@ const TextEditor = () => {
 
   useEffect(() => {
     // Typewriting effect
-    const texts = ["Banglish e lekha shuru korun.", "বাংলায় লেখা শুরু করুন"];
+    const texts = ["Banglish e lekha shuru korun.", "Example: Ami bhat khai"];
     let index = 0;
     let charIndex = 0;
     let isDeleting = false;
@@ -89,44 +88,50 @@ const TextEditor = () => {
       }
   
       const data = await response.json();
-      const translatedText = data.translated_text;  // Extract the translated text
-  
-      // Update the state to show the translated text in the editor with applied styles
+      let translatedText = data.translated_text;  // Extract the translated text
       console.log(translatedText);
-      <p>{translatedText}</p>
+  
+      setTranslatedText(translatedText);
       setIsTranslated(true);
     } catch (error) {
       console.error('Error during translation:', error);
     }
   };
-  
 
-  const handleGeneratePdf = () => {
-    const editorContent = editorRef.current.querySelector('.ql-editor');
-    html2canvas(editorContent).then((canvas) => {
-      const imgData = canvas.toDataURL('image/png');
-      const pdf = new jsPDF('p', 'mm', 'a4');
-      const imgWidth = 210; // Width of A4 in mm
-      const pageHeight = 297; // Height of A4 in mm
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+  const handleGeneratePDF = async () => {
+    try {
+      // Make API call to backend
+      const token = localStorage.getItem('token'); // Retrieve token from localStorage or state
 
-      let heightLeft = imgHeight;
-      let position = 0;
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`, // Add the token to the Authorization header
+        },
+      };
+      const formData = new FormData();
+      formData.append("bangla_text", translatedText);
+      console.log("formData", formData);
+      console.log("banglaText", translatedText);
+      const res = await axios.post("http://localhost:8000/content/generate-pdf", formData, config);
 
-      // Add the image to the PDF
-      while (heightLeft > 0) {
-        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-        heightLeft -= pageHeight;
-        position -= pageHeight;
-        if (heightLeft > 0) {
-          pdf.addPage();
-        }
-      }
+      // Extract title and link from the response
+      const { title, caption, link } = res.data.content;
 
-      pdf.save(`${pdfName || 'Untitled'}.pdf`);
-    });
+      // Prepare a response message for the dialog
+      const responseMessage = {
+        title,
+        caption,
+        link,
+      };
 
-    setShowDialog(false);
+      // Set the response message and show the dialog
+      setResponse(responseMessage);
+      console.log("PDF Generation Response: ", responseMessage);
+      setShowDialog(true);
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+      alert("Failed to generate PDF. Please try again.");
+    }
   };
 
   return (
@@ -143,55 +148,43 @@ const TextEditor = () => {
       <button className="bg-black text-white py-3 px-8 rounded-lg mt-5" onClick={handleTranslate}>
         Translate
       </button>
+
       {isTranslated && (
-  <>
-    {/* Display the translated content in a beautiful viewer card */}
-    <div className="translated-card">
-      <div className="card-header">
-        <h3>Translated Text</h3>
-      </div>
-      <div className="card-body">
-        <div
-          className="translated-text"
-          dangerouslySetInnerHTML={{ __html: translatedText }}
-        ></div>
-      </div>
-    </div>
-
-    {/* PDF generation dialog */}
-    <button className="upload-pdf-button" onClick={() => setShowDialog(true)}>
-      Upload to PDF
-    </button>
-    {showDialog && (
-      <div className="dialog-overlay">
-        <div className="dialog-box">
-          <h3>Generate PDF</h3>
-          <label>
-            File Name:
-            <input
-              type="text"
-              value={pdfName}
-              onChange={(e) => setPdfName(e.target.value)}
-              placeholder="Enter PDF Name"
-            />
-          </label>
-          <label>
-            Privacy:
-            <select value={privacy} onChange={(e) => setPrivacy(e.target.value)}>
-              <option value="Public">Public</option>
-              <option value="Private">Private</option>
-            </select>
-          </label>
-          <div className="dialog-actions">
-            <button onClick={handleGeneratePdf}>Generate</button>
-            <button onClick={() => setShowDialog(false)}>Cancel</button>
+        <>
+          {/* Display the translated content in a beautiful viewer card */}
+          <div className="translated-card">
+            <div className="card-header">
+              <h3>Translated Text</h3>
+            </div>
+            <div className="card-body">
+              <div dangerouslySetInnerHTML={{ __html: translatedText }} />
+            </div>
           </div>
-        </div>
-      </div>
-    )}
-  </>
-)}
 
+          {/* PDF generation dialog */}
+          <button className="upload-pdf-button" onClick={handleGeneratePDF}>
+            Upload to PDF
+          </button>
+
+          {showDialog && response && (
+            <div className="dialog-overlay">
+              <div className="dialog-box">
+                <h3>PDF Generated Successfully</h3>
+                <p><strong>Title:</strong> {response.title}</p>
+                <p><strong>Caption:</strong> {response.caption}</p>
+                <p>
+                  <strong>Link:</strong>{" "}
+                  <a href={`http://localhost:8000/${response.link}`} target="_blank" rel="noopener noreferrer">
+                    Open PDF
+                  </a>
+                </p>
+                <button className="bg-black text-white py-3 px-8 rounded-lg mt-5" onClick={() => setShowDialog(false)}>Close</button>
+              </div>
+            </div>
+          )}
+
+        </>
+      )}
     </div>
   );
 };

@@ -9,12 +9,13 @@ export const navLinks = [
 ];
 
 
-// export const pdfs = [
-//     {id: 1, link: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf", title: "Dummy PDF", caption: "This is a dummy PDF file", public: True},
-//     {id: 2, link: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf", title: "Dummy PDF", caption: "This is a dummy PDF file", public: True},
-//     {id: 3, link: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf", title: "Dummy PDF", caption: "This is a dummy PDF file", public: True},
-//     {id: 4, link: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf", title: "Dummy PDF", caption: "This is a dummy PDF file", public: True},
-// ]
+const pdfs = [
+    {id: 1, link: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf", title: "Dummy PDF 1", caption: "This is a dummy PDF file", public: true},
+    {id: 2, link: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf", title: "Dummy PDF 2", caption: "This is a dummy PDF file", public: true},
+    {id: 3, link: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf", title: "Dummy PDF 3", caption: "This is a dummy PDF file", public: false },
+    {id: 4, link: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf", title: "Dummy PDF 4", caption: "This is a dummy PDF file", public: true},
+  ];
+  
 
 export const books = [
     
