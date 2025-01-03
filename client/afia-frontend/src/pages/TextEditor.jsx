@@ -18,7 +18,7 @@ const TextEditor = () => {
 
   useEffect(() => {
     // Typewriting effect
-    const texts = ["Banglish e lekha shuru korun.", "বাংলায় লেখা শুরু করুন"];
+    const texts = ["Banglish e lekha shuru korun.", "Example: Ami bhat khai"];
     let index = 0;
     let charIndex = 0;
     let isDeleting = false;
@@ -89,16 +89,22 @@ const TextEditor = () => {
       }
   
       const data = await response.json();
-      const translatedText = data.translated_text;  // Extract the translated text
-  
-      // Update the state to show the translated text in the editor with applied styles
+      let translatedText = data.translated_text;  // Extract the translated text
       console.log(translatedText);
-      <p>{translatedText}</p>
+  
+      // // Clean up the <p> tags, but leave <br> and other formatting tags like <strong>, <em>, <u> intact
+      // translatedText = translatedText.replace(/<p>/g, '').replace(/<\/p>/g, '').trim();
+  
+      // Update the state to show the translated text
+      
+      setTranslatedText(translatedText);
       setIsTranslated(true);
     } catch (error) {
       console.error('Error during translation:', error);
     }
   };
+  
+  
   
 
   const handleGeneratePdf = () => {
@@ -143,55 +149,53 @@ const TextEditor = () => {
       <button className="bg-black text-white py-3 px-8 rounded-lg mt-5" onClick={handleTranslate}>
         Translate
       </button>
+
       {isTranslated && (
-  <>
-    {/* Display the translated content in a beautiful viewer card */}
-    <div className="translated-card">
-      <div className="card-header">
-        <h3>Translated Text</h3>
-      </div>
-      <div className="card-body">
-        <div
-          className="translated-text"
-          dangerouslySetInnerHTML={{ __html: translatedText }}
-        ></div>
-      </div>
-    </div>
-
-    {/* PDF generation dialog */}
-    <button className="upload-pdf-button" onClick={() => setShowDialog(true)}>
-      Upload to PDF
-    </button>
-    {showDialog && (
-      <div className="dialog-overlay">
-        <div className="dialog-box">
-          <h3>Generate PDF</h3>
-          <label>
-            File Name:
-            <input
-              type="text"
-              value={pdfName}
-              onChange={(e) => setPdfName(e.target.value)}
-              placeholder="Enter PDF Name"
-            />
-          </label>
-          <label>
-            Privacy:
-            <select value={privacy} onChange={(e) => setPrivacy(e.target.value)}>
-              <option value="Public">Public</option>
-              <option value="Private">Private</option>
-            </select>
-          </label>
-          <div className="dialog-actions">
-            <button onClick={handleGeneratePdf}>Generate</button>
-            <button onClick={() => setShowDialog(false)}>Cancel</button>
+        <>
+          {/* Display the translated content in a beautiful viewer card */}
+          <div className="translated-card">
+            <div className="card-header">
+              <h3>Translated Text</h3>
+            </div>
+            <div className="card-body">
+            <div dangerouslySetInnerHTML={{ __html: translatedText }} />
+            </div>
           </div>
-        </div>
-      </div>
-    )}
-  </>
-)}
 
+          {/* PDF generation dialog */}
+          <button className="upload-pdf-button" onClick={() => setShowDialog(true)}>
+            Upload to PDF
+          </button>
+
+          {showDialog && (
+            <div className="dialog-overlay">
+              <div className="dialog-box">
+                <h3>Generate PDF</h3>
+                <label>
+                  File Name:
+                  <input
+                    type="text"
+                    value={pdfName}
+                    onChange={(e) => setPdfName(e.target.value)}
+                    placeholder="Enter PDF Name"
+                  />
+                </label>
+                <label>
+                  Privacy:
+                  <select value={privacy} onChange={(e) => setPrivacy(e.target.value)}>
+                    <option value="Public">Public</option>
+                    <option value="Private">Private</option>
+                  </select>
+                </label>
+                <div className="dialog-actions">
+                  <button onClick={handleGeneratePdf}>Generate</button>
+                  <button onClick={() => setShowDialog(false)}>Cancel</button>
+                </div>
+              </div>
+            </div>
+          )}
+        </>
+      )}
     </div>
   );
 };
