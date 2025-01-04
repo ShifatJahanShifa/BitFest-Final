@@ -7,7 +7,7 @@
 
 ```
 Frontend: Reactjs
-Backend : FastAPI,
+Backend : FastAPI
 Database: Sqlite
 
 ```
@@ -24,23 +24,35 @@ clone the project:
 
 ## Run Locally
 
+Frontend
+```bash
+   cd client
+   cd afia-frontend
+   npm install
+   npm run dev
+```
+
+Backend
 ```bash
    cd Backend
-   npm install
-   // run 
+   pip install -r requirements.txt 
+   uvicorn app.main:app --reload
 ```
 
 
+##  Implemented Feature:
 
+```
+User authentication
+Translation system
+Content management system
+Search functionality 
+Chatbot integration
+Translation system improvement
+Analytical dashboard
+![Uploading image.png…]()
 
-
-
-## Authors
-
-- [@ShifatJahanShifa](https://www.github.com/ShifatJahanShifa)
-- [@AfiaLubaina](https://www.github.com/afia-lubaina)
-- [@EhsanUddoula](https://www.github.com/EhsanUddoula)
-
+```
 
 ## **Route**: `/auth/register`  
 **Method**: POST 
