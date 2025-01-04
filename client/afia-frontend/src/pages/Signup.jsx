@@ -39,7 +39,6 @@ const Signup = () => {
       if (response.status === 200) {
         setIsSuccess(true);
         setMessage("Registration successful! Redirecting...");
-        setFormData({ name: "", email: "", password: "", role: "user" });
   
         const { access_token } = response.data;
         localStorage.setItem("token", access_token);

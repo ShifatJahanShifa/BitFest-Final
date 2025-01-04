@@ -3,7 +3,7 @@ import 'quill/dist/quill.snow.css'; // Import the Snow theme styles
 import Quill from 'quill';
 import './TextEditor.css'; // Custom styles
 import axios from 'axios';
-import { use } from 'react';
+import Loading from './Ogrobot/Loading';
 
 const TextEditor = () => {
   const editorRef = useRef(null);
@@ -15,6 +15,7 @@ const TextEditor = () => {
   const [showDialog, setShowDialog] = useState(false);
   const [pdfName, setPdfName] = useState('');
   const [privacy, setPrivacy] = useState('Public');
+  const [loading, setLoading] = useState(false); // Loading state
 
   useEffect(() => {
     // Typewriting effect
@@ -70,14 +71,14 @@ const TextEditor = () => {
       quillInstance.disable();
     };
   }, []);
-
- 
     
 
   const handleTranslate = async () => {
     const editorContent = editorRef.current.querySelector('.ql-editor').innerHTML;  // Get the HTML content from the editor
   
     try {
+      setLoading(true); // Start loading
+  
       // Create FormData to send the text as form data
       const formData = new FormData();
       formData.append('banglish_text', editorContent); // Append the text to formData
@@ -100,11 +101,15 @@ const TextEditor = () => {
       setIsTranslated(true);
     } catch (error) {
       console.error('Error during translation:', error);
+    } finally {
+      setLoading(false); // End loading
     }
   };
 
   const handleGeneratePDF = async () => {
     try {
+      setLoading(true); // Start loading
+
       // Make API call to backend
       const token = localStorage.getItem('token'); // Retrieve token from localStorage or state
   
@@ -141,6 +146,8 @@ const TextEditor = () => {
     } catch (error) {
       console.error("Error generating PDF:", error);
       alert("Failed to generate PDF. Please try again.");
+    } finally {
+      setLoading(false); // End loading
     }
   };
   
@@ -160,6 +167,7 @@ const TextEditor = () => {
         Translate
       </button>
 
+
       {isTranslated && (
         <>
           {/* Display the translated content in a beautiful viewer card */}
@@ -178,7 +186,7 @@ const TextEditor = () => {
           </button>
 
           {showDialog && response && (
-            <div className="dialog-overlay">
+            <div className="dialog-overlay text-left ">
               <div className="dialog-box">
                 <h3>PDF Generated Successfully</h3>
                 <p><strong>Title:</strong> {response.title}</p>

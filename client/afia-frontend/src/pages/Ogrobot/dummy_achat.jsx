@@ -78,7 +78,36 @@ const Achat = () => {
     setUserInput("");
   };
 
- 
+  const handleInitializeRag = async () => {
+    const accessToken = localStorage.getItem("token");
+    console.log("Access Token:", accessToken);
+    if (!accessToken) {
+      setError("No access token found.");
+      return;
+    }
+
+    try {
+      const response = await fetch(`http://localhost:8000/qna/initialize-rag`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      co
+
+      if (!response.ok) {
+        throw new Error(`Failed to initialize RAG system: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      console.log("RAG system initialized:", data);
+      alert(data.message); // Display success message
+    } catch (error) {
+      console.error("Error initializing RAG system:", error);
+      alert("An error occurred while initializing the RAG system.");
+    }
+  };
 
   return (
     <div className="w-4/5 mx-auto p-4 bg-white mt-[2rem] rounded-lg h-[600px] flex flex-col">
@@ -107,7 +136,18 @@ const Achat = () => {
       {/* User Input */}
       
       <form onSubmit={handleSubmit} className="flex mt-4">
-      
+      <button onClick={handleInitializeRag} className="bg-black text-white py-3 px-5 rounded-full mr-2 flex items-center justify-center ">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="currentColor"
+          viewBox="0 0 24 24"
+          className="w-6 h-6 mr-2"
+          alt="Generate question from pdf"
+        >
+          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.54 5.82 22 7 14.14l-5-4.87 6.91-1.01L12 2z" />
+        </svg>
+        
+      </button>
         <input
           type="text"
           value={userInput}

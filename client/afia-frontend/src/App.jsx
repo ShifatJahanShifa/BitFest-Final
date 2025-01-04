@@ -24,6 +24,9 @@ import FetchPdfLinks from "./pages/FetchPdfLinks";
 import ShowPubPost from "./pages/ShowPubPost";
 import ShowPdfContent from "./pages/ShowPdfContent";
 import SearchComponent from "./pages/SearchComponent";
+import Rag from "./pages/Rag";
+import AskQuestion from "./pages/AskQuestion";
+import AdminPage from "./pages/Ogrobot/AdminPage";
 
 const App = () => {
   return (
@@ -51,6 +54,9 @@ const App = () => {
          <Route path='/fes' element={<ShowPubPost />} />
          <Route path='/showcontents' element={<ShowPdfContent />} />
          <Route path='/search' element={<SearchComponent />} />
+         <Route path='/rag' element={<Rag />} />
+         <Route path='/ask' element={<AskQuestion />} />
+         <Route path='/admin' element={<AdminPage />} />
         </Routes>
         
         <Footer />

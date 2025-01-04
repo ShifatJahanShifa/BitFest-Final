@@ -12,7 +12,6 @@ const Nav = () => {
   // Check token in localStorage on component mount
   useEffect(() => {
     const token = localStorage.getItem('token');
-    
     setIsLoggedIn(token ? true : false);
   }, []);
 
@@ -32,7 +31,6 @@ const Nav = () => {
         {/* Logo on the left */}
         <a href="/">
           <img
-
             src="ai.png"
             alt="logo"
             width={180}
@@ -52,19 +50,19 @@ const Nav = () => {
           ))}
           <li>
             {isLoggedIn ? (
-              <button
+              <span
                 onClick={handleLogout}
-                className="px-4 py-2 text-white bg-red-500 rounded-lg hover:bg-red-600"
+                className="text-red-500 cursor-pointer hover:text-red-600"
               >
                 Logout
-              </button>
+              </span>
             ) : (
-              <button
+              <span
                 onClick={() => navigate('/login')}
-                className="px-4 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600"
+                className="text-blue-500 cursor-pointer hover:text-blue-600"
               >
                 Login
-              </button>
+              </span>
             )}
           </li>
         </ul>
@@ -97,19 +95,19 @@ const Nav = () => {
               ))}
               <li>
                 {isLoggedIn ? (
-                  <button
+                  <span
                     onClick={handleLogout}
-                    className="px-4 py-2 text-white bg-red-500 rounded-lg hover:bg-red-600"
+                    className="text-slate-gray cursor-pointer hover:text-red-600"
                   >
                     Logout
-                  </button>
+                  </span>
                 ) : (
-                  <button
+                  <span
                     onClick={() => navigate('/login')}
-                    className="px-4 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600"
+                    className="text-slate-gray cursor-pointer  hover:text-red-600"
                   >
                     Login
-                  </button>
+                  </span>
                 )}
               </li>
             </ul>

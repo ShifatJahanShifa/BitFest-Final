@@ -6,6 +6,7 @@ export const navLinks = [
     { href: "/achat", label: "Banglish Chatbot" },
     { href: "/dashboard", label: "Profile" },
     { href: "/texteditor", label: "TextEditor" },
+    { href: "/rag", label: "AskPDF" },
 ];
 
 

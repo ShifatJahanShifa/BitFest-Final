@@ -10,6 +10,8 @@ import axios from 'axios';
 import { useState } from "react";
 import ShowPdfContent from "./ShowPdfContent";
 import ShowPubPost from "./ShowPubPost";
+import { Search } from "lucide-react";
+import SearchComponent from "./SearchComponent";
 
 
 
@@ -55,26 +57,9 @@ const Home = () => {
           পাঠকের লেখা গল্প পড়ুন
           </h1>
 
-        {/* // added by me   */}
-          <div className="w-fit p-4 mx-auto">
-            <form className="flex flex-row gap-3" onSubmit={handleSubmission}>
-              <input type="text" 
-              placeholder="search for a PDF and user" 
-              className="bg-slate-100 p-2 border border-black rounded-lg"
-              value={searchQuery}
-              onChange={(e)=>{
-                  setSearchQuery(e.target.value)
-              }}
-              />
-              <button type="submit" className="p-2 bg-black text-white rounded-lg">search</button>
-              {/* <p>{searchQuery}</p> */}
-            </form>
-          </div>
-
-
         </div>
         <div className="center max-container w-4/5 mx-auto mt-[5rem] fade-in-manual opacity-0">
-          <ShowPubPost />
+          <SearchComponent />
         </div>
       </div>
       <div className="max-container w-4/5 mx-auto mt-[2rem]">

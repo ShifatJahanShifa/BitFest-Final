@@ -1,5 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import Card from '../components/Cards/SmallCards'; // Assuming you have a Card component
+import Chart from '../components/Charts/RadialChart';
+import Card from '../components/Cards/SmallCards';
+
+const pdfs = [
+  {id: 1, link: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf", title: "Dummy PDF 1", caption: "This is a dummy PDF file", public: true},
+  {id: 2, link: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf", title: "Dummy PDF 2", caption: "This is a dummy PDF file", public: true},
+  {id: 3, link: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf", title: "Dummy PDF 3", caption: "This is a dummy PDF file", public: false },
+  {id: 4, link: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf", title: "Dummy PDF 4", caption: "This is a dummy PDF file", public: true},
+];
 
 const Dashboard = () => {
   const [userId, setUserId] = useState(null); // Declare state for user ID
@@ -31,6 +39,7 @@ const Dashboard = () => {
           Authorization: `Bearer ${accessToken}`,
         },
       });
+      console.log("response", response);
 
       if (response.ok) {
         const data = await response.json();
@@ -48,6 +57,35 @@ const Dashboard = () => {
       setError(`Error fetching user contents: ${error.message}`);
     }
   };
+
+  const chartOptions = {
+    series: [44, 55, 67, 83],
+    chart: {
+      height: 350,
+      type: 'radialBar',
+    },
+    plotOptions: {
+      radialBar: {
+        dataLabels: {
+          name: {
+            fontSize: '22px',
+          },
+          value: {
+            fontSize: '16px',
+          },
+          total: {
+            show: true,
+            label: 'Total',
+            formatter: function (w) {
+              return 249;
+            },
+          },
+        },
+      },
+    },
+    labels: ['words-translated', 'stories-written', 'bot interactions', 'stories-read'],
+  };
+
 
   
   // Function to handle the status change
@@ -126,6 +164,9 @@ const Dashboard = () => {
               !error && <p>Loading...</p> // Show loading state if contents are being fetched
             )}
           </div>
+          <div className="ml-[40rem] flex justify-center items-center">
+                <Chart chartOptions={chartOptions} /> {/* Use the Chart component here */}
+              </div>
         </div>
       </div>
     </main>
