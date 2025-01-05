@@ -7,7 +7,7 @@
 
 ```
 Frontend: Reactjs
-Backend : FastAPI,
+Backend : FastAPI
 
 ```
 
@@ -21,22 +21,10 @@ clone the project:
   git clone https://github.com/ShifatJahanShifa/BitFest-Final.git
 ```
 
-## Run Locally
-
-```bash
-   cd Backend
-   npm install
-   // run 
-```
 
 
 
 
 
 
-## Authors
-
-- [@ShifatJahanShifa](https://www.github.com/ShifatJahanShifa)
-- [@AfiaLubaina](https://www.github.com/ShifatJahanShifa)
-- [@EhsanUddowla](https://www.github.com/ShifatJahanShifa)
 
